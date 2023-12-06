@@ -7,10 +7,7 @@ import 'package:tandem/ui/message.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Login extends StatefulWidget {
-  final WebSocketChannel channel;
-
-  // Login({super.key});
-  Login(this.channel, {super.key});
+  Login({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -20,6 +17,25 @@ class _LoginScreenState extends State<Login> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _2FA = TextEditingController();
+
+  var channel;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void setupWS(String ws) {
+    final wsUrl = Uri.parse(ws);
+    channel = WebSocketChannel.connect(wsUrl);
+
+    // final streamController = StreamController.broadcast();
+    // streamController.addStream(channel.stream);
+
+    channel.stream.listen((message) {
+      channel.sink.add('cd userId');
+    });
+  }
 
   void sendPostRequest() async {
     final ipAddress = '34.17.38.91.89';
@@ -41,20 +57,11 @@ class _LoginScreenState extends State<Login> {
 
     if (response.statusCode == 200) {
       print('Response data: ${response.body}');
+      setupWS(response.body);
     } else {
       print('Request failed with status code: ${response.statusCode}');
       print('Response data: ${response.body}');
     }
-  }
-
-
-  @override
-  void initState() {
-    super.initState();
-    widget.channel.stream.listen((message) {
-      // Handle the message received from the server
-      // Navigate to next page or show an error based on the message
-    });
   }
 
   void _login() {
@@ -69,8 +76,9 @@ class _LoginScreenState extends State<Login> {
   }
 
   void verify() {
-    widget.channel.sink.add(_2FA.text);
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => Message(widget.channel)));
+    channel.sink.add(_2FA.text);
+    Navigator.of(context).push(
+        CupertinoPageRoute(builder: (context) => Message(channel)));
   }
 
   void _show2FADialog() {
@@ -81,7 +89,9 @@ class _LoginScreenState extends State<Login> {
           title: Text('Enter your 2FA code'),
           content: Column(
             children: <Widget>[
-              SizedBox(height: MediaQuery.sizeOf(context).height * 0.025,),
+              SizedBox(
+                height: MediaQuery.sizeOf(context).height * 0.025,
+              ),
               CupertinoTextField(
                 controller: _2FA,
                 placeholder: '',
@@ -142,5 +152,4 @@ class _LoginScreenState extends State<Login> {
           ),
         ));
   }
-
 }

@@ -18,30 +18,18 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final wsUrl = Uri.parse('ws://localhost:1234');
-  var channel = WebSocketChannel.connect(wsUrl);
-
-  // final streamController = StreamController.broadcast();
-  // streamController.addStream(channel.stream);
-
-  channel.stream.listen((message) {
-    channel.sink.add('cd userId');
-  });
-
-  runApp(MyApp(channel));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
 
-  final WebSocketChannel channel;
-
-  const MyApp(this.channel, {super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
         title: 'Flutter Demo',
-        home: Login(channel)
+        home: Login()
     );
   }
 }
