@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "216291031442",
+    "firebase_url": "https://tandem-messaging-default-rtdb.firebaseio.com",
+    "project_id": "tandem-messaging",
+    "storage_bucket": "tandem-messaging.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216291031442:android:76bf7ad82cf0bb86d0a94b",
+        "android_client_info": {
+          "package_name": "com.pranavb.tandemorg.tandem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEJ_0CETXpHmSBt5Mx8bzq09Fb_939qhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
