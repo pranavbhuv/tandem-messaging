@@ -60,11 +60,12 @@ class _LoginScreenState extends State<Login> {
   void _login() {
     // TODO: Replace this with actual login logic and condition
     bool loginConditionMet = true;
-    widget.channel.sink.add(_usernameController.text);
-    widget.channel.sink.add(_passwordController.text);
-    if (loginConditionMet) {
-      _show2FADialog();
-    }
+    sendPostRequest();
+    // widget.channel.sink.add(_usernameController.text);
+    // widget.channel.sink.add(_passwordController.text);
+    // if (loginConditionMet) {
+    //   _show2FADialog();
+    // }
   }
 
   void verify() {
