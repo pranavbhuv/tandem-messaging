@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
+import 'chat.dart';
+
 class Message extends StatefulWidget {
   @override
   _MessagesHomeScreenState createState() => _MessagesHomeScreenState();
@@ -8,6 +10,10 @@ class Message extends StatefulWidget {
 
 class _MessagesHomeScreenState extends State<Message> {
   String searchQuery = '';
+
+  void _navigateToChatScreen() {
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => Chat()));
+  }
 
   final List<Map<String, dynamic>> messages = List.generate(
     20,
@@ -79,43 +85,48 @@ class _MessagesHomeScreenState extends State<Message> {
   }
 
   Widget _buildCustomListTile(Map<String, dynamic> message) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      child: Row(
-        children: <Widget>[
-          ClipOval(
-            child: Image.network(
-              message["avatarUrl"],
-              width: 40,
-              height: 40,
-              fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        _navigateToChatScreen();
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        child: Row(
+          children: <Widget>[
+            ClipOval(
+              child: Image.network(
+                message["avatarUrl"],
+                width: 40,
+                height: 40,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  message["name"],
-                  style: TextStyle(
-                    color: CupertinoColors.white,
-                    fontWeight: FontWeight.bold,
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    message["name"],
+                    style: TextStyle(
+                      color: CupertinoColors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(height: 3),
-                Text(
-                  message["message"],
-                  style: TextStyle(color: CupertinoColors.systemGrey),
-                ),
-              ],
+                  SizedBox(height: 3),
+                  Text(
+                    message["message"],
+                    style: TextStyle(color: CupertinoColors.systemGrey),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Text(
-            message["time"],
-            style: TextStyle(color: CupertinoColors.systemGrey2),
-          ),
-        ],
+            Text(
+              message["time"],
+              style: TextStyle(color: CupertinoColors.systemGrey2),
+            ),
+          ],
+        ),
       ),
     );
   }
