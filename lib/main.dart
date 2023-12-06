@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:tandem/ui/chat_screen.dart';
-import 'package:tandem/ui/select_user_screen.dart';
+import 'package:tandem/ui/message.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'firebase_options.dart';
@@ -20,6 +19,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(title: 'Flutter Demo', home: SelectUserScreen());
+    return CupertinoApp(title: 'Flutter Demo', home: Message());
   }
 }
+
+
