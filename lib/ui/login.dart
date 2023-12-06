@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:tandem/ui/message.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -17,6 +20,33 @@ class _LoginScreenState extends State<Login> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _2FA = TextEditingController();
+
+  void sendPostRequest() async {
+    final ipAddress = '34.17.38.91.89';
+    final port = 3000;
+    final endpoint = '/initsession';
+    final url = Uri.http('$ipAddress:$port', endpoint);
+
+    final Map<String, dynamic> requestData = {
+      'email': '_usernameController',
+    };
+
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(requestData), // Encode data as JSON
+    );
+
+    if (response.statusCode == 200) {
+      print('Response data: ${response.body}');
+    } else {
+      print('Request failed with status code: ${response.statusCode}');
+      print('Response data: ${response.body}');
+    }
+  }
+
 
   @override
   void initState() {
