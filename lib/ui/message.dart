@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'chat.dart';
 
 class Message extends StatefulWidget {
+  final WebSocketChannel channel;
+
+  Message(this.channel, {super.key});
+
   @override
   _MessagesHomeScreenState createState() => _MessagesHomeScreenState();
 }
@@ -11,8 +16,23 @@ class Message extends StatefulWidget {
 class _MessagesHomeScreenState extends State<Message> {
   String searchQuery = '';
 
-  void _navigateToChatScreen() {
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) => Chat()));
+  @override
+  void initState() {
+    super.initState();
+    widget.channel.stream.listen((message) {
+      // Handle the message received from the server
+      // Navigate to next page or show an error based on the message
+    });
+  }
+
+  void _navigateToChatScreen(Map<String, dynamic> contact) {
+    Navigator.of(context).push(CupertinoPageRoute(
+      builder: (context) => Chat(
+        channel: widget.channel,
+        contactName: contact['name'],
+        avatarUrl: contact['avatarUrl'],
+      ),
+    ));
   }
 
   final List<Map<String, dynamic>> messages = List.generate(
@@ -87,7 +107,7 @@ class _MessagesHomeScreenState extends State<Message> {
   Widget _buildCustomListTile(Map<String, dynamic> message) {
     return GestureDetector(
       onTap: () {
-        _navigateToChatScreen();
+        _navigateToChatScreen(message);
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
