@@ -39,9 +39,9 @@ class _LoginScreenState extends State<Login> {
   }
 
   void sendPostRequest() async {
-    final ipAddress = '34.17.38.91.89';
-    final port = 3000;
-    final endpoint = '/initsession';
+    final ipAddress = '34.173.89.189';
+    final port = 8080;
+    final endpoint = '/initSession';
     final url = Uri.http('$ipAddress:$port', endpoint);
 
     final Map<String, dynamic> requestData = {
