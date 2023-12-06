@@ -45,7 +45,7 @@ class _LoginScreenState extends State<Login> {
     final url = Uri.http('$ipAddress:$port', endpoint);
 
     final Map<String, dynamic> requestData = {
-      'email': '_usernameController',
+      'email': _usernameController.text,
     };
 
     final response = await http.post(
