@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tandem/ui/login.dart';
 import 'package:tandem/ui/message.dart';
@@ -17,27 +19,15 @@ void main() async {
   final wsUrl = Uri.parse('ws://localhost:1234');
   var channel = WebSocketChannel.connect(wsUrl);
 
+  // final streamController = StreamController.broadcast();
+  // streamController.addStream(channel.stream);
+
   channel.stream.listen((message) {
-    channel.sink.add('received!');
-    channel.sink.close(status.goingAway);
+    channel.sink.add('cd userId');
   });
 
   runApp(MyApp(channel));
-  // runApp(MyApp());
 }
-
-// class MyApp extends StatelessWidget {
-//
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return CupertinoApp(
-//         title: 'Flutter Demo',
-//         home: Login()
-//     );
-//   }
-// }
 
 class MyApp extends StatelessWidget {
 
