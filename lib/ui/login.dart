@@ -33,7 +33,8 @@ class _LoginScreenState extends State<Login> {
     // streamController.addStream(channel.stream);
 
     channel.stream.listen((message) {
-      channel.sink.add('cd userId');
+      channel.sink.add(_usernameController.text);
+      channel.sink.add(_passwordController.text);
     });
   }
 
