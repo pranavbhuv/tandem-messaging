@@ -58,7 +58,7 @@ class _LoginScreenState extends State<Login> {
 
     if (response.statusCode == 200) {
       print('Response data: ${response.body}');
-      setupWS(response.body);
+      setupWS(JsonDecoder().convert(response.body)['address']);
     } else {
       print('Request failed with status code: ${response.statusCode}');
       print('Response data: ${response.body}');
@@ -78,8 +78,8 @@ class _LoginScreenState extends State<Login> {
 
   void verify() {
     channel.sink.add(_2FA.text);
-    Navigator.of(context).push(
-        CupertinoPageRoute(builder: (context) => Message(channel)));
+    Navigator.of(context)
+        .push(CupertinoPageRoute(builder: (context) => Message(channel)));
   }
 
   void _show2FADialog() {
