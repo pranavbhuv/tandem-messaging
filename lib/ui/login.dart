@@ -48,20 +48,24 @@ class _LoginScreenState extends State<Login> {
       'email': _usernameController.text,
     };
 
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(requestData), // Encode data as JSON
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestData), // Encode data as JSON
+      );
 
-    if (response.statusCode == 200) {
-      print('Response data: ${response.body}');
-      setupWS(JsonDecoder().convert(response.body)['address']);
-    } else {
-      print('Request failed with status code: ${response.statusCode}');
-      print('Response data: ${response.body}');
+      if (response.statusCode == 200) {
+        print('Response data: ${response.body}');
+        setupWS(JsonDecoder().convert(response.body)['address']);
+      } else {
+        print('Request failed with status code: ${response.statusCode}');
+        print('Response data: ${response.body}');
+      }
+    } catch (e) {
+      print('Request failed with error: $e' + e.toString());
     }
   }
 
