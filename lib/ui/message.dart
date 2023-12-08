@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tandem/websocketmanager.dart';
+import 'package:tandem/utils/websocketmanager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'chat.dart';

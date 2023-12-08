@@ -5,7 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tandem/ui/login.dart';
 import 'package:tandem/ui/message.dart';
-import 'package:tandem/websocketmanager.dart';
+import 'package:tandem/utils/settings.dart';
+import 'package:tandem/utils/websocketmanager.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -74,7 +75,7 @@ class MyApp extends StatelessWidget {
 
   Future<WebSocketManager> createWebSocket() async {
     try {
-      final ipAddress = '35.232.9.168';
+      final ipAddress = Settings().getIP();
       final port = 8080;
       final endpoint = '/initSession';
       final url = Uri.http('$ipAddress:$port', endpoint);
@@ -86,7 +87,7 @@ class MyApp extends StatelessWidget {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(requestData), // Encode data as JSON
+        body: jsonEncode(requestData),
       );
 
       if (response.statusCode == 200) {

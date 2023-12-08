@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:tandem/utils/hexcolor.dart';
-import 'package:tandem/websocketmanager.dart';
+import 'package:tandem/utils/websocketmanager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Chat extends StatefulWidget {

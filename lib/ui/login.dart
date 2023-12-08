@@ -7,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tandem/ui/message.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../websocketmanager.dart';
+import '../utils/settings.dart';
+import '../utils/websocketmanager.dart';
 
 class Login extends StatefulWidget {
   Login({super.key});
@@ -27,7 +28,7 @@ class _LoginScreenState extends State<Login> {
   }
 
   void sendPostRequest() async {
-    final ipAddress = '35.232.9.168';
+    final ipAddress = Settings().getIP();
     final port = 8080;
     final endpoint = '/initSession';
     final url = Uri.http('$ipAddress:$port', endpoint);
