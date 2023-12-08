@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tandem/websocketmanager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'chat.dart';
 
 class Message extends StatefulWidget {
-  final WebSocketChannel channel;
+  final WebSocketManager channel;
 
   Message(this.channel, {super.key});
 
@@ -16,19 +17,30 @@ class Message extends StatefulWidget {
 class _MessagesHomeScreenState extends State<Message> {
   String searchQuery = '';
 
+  final TextEditingController _textController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    widget.channel.stream.listen((message) {
+    final wsManager = WebSocketManager();
+
+    wsManager.messages.listen((message) {
       // Handle the message received from the server
       // Navigate to next page or show an error based on the message
+
+      // Example:
+      // if (message.contains('Success')) {
+      //   Navigator.of(context).push(...); // Navigate to the next page
+      // } else {
+      //   // Show an error message
+      // }
     });
   }
 
   void _navigateToChatScreen(Map<String, dynamic> contact) {
     Navigator.of(context).push(CupertinoPageRoute(
       builder: (context) => Chat(
-        channel: widget.channel,
+        manager: widget.channel,
         contactName: contact['name'],
         avatarUrl: contact['avatarUrl'],
       ),
@@ -72,9 +84,7 @@ class _MessagesHomeScreenState extends State<Message> {
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: Icon(CupertinoIcons.square_pencil),
-                onPressed: () {
-                  // Navigate to compose new message screen
-                },
+                onPressed: () => _showModalScreen(context),
               ),
             ),
             SliverToBoxAdapter(
@@ -150,4 +160,99 @@ class _MessagesHomeScreenState extends State<Message> {
       ),
     );
   }
+
+  void _showModalScreen(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(400)),
+          height: MediaQuery.of(context).size.height * 0.4,
+          child: CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              leading: Text(''),
+              middle: Text('New Message'),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CupertinoTextField(
+                      placeholder: 'To:',
+                      prefix: Padding(
+                        padding: const EdgeInsets.fromLTRB(9.0, 6.0, 9.0, 6.0),
+                        child: Icon(
+                          CupertinoIcons.person_add,
+                          color: CupertinoColors.systemGrey,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: CupertinoColors.systemGrey),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                  ),
+                  _buildMessageInput(),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMessageInput() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              decoration: BoxDecoration(
+                color: CupertinoColors.darkBackgroundGray,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: CupertinoTextField(
+                      controller: _textController,
+                      placeholder: 'iMessage',
+                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                      decoration: null,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 8),
+          Align(
+            alignment: Alignment.topCenter,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: Icon(
+                CupertinoIcons.arrow_up_circle_fill,
+                color: CupertinoColors.activeBlue,
+                size: MediaQuery.of(context).size.height * 0.045,
+              ),
+              onPressed: () {
+                // TODO implement the send message functionality
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

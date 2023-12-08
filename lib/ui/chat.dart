@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:tandem/utils/hexcolor.dart';
+import 'package:tandem/websocketmanager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Chat extends StatefulWidget {
-  final WebSocketChannel channel;
+  final WebSocketManager manager;
   final String contactName;
   final String avatarUrl;
 
-  Chat({Key? key, required this.channel, required this.contactName, required this.avatarUrl}) : super(key: key);
+  Chat({Key? key, required this.manager, required this.contactName, required this.avatarUrl}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -32,18 +33,22 @@ class _ChatScreenState extends State<Chat> {
   @override
   void initState() {
     super.initState();
-    widget.channel.sink.add("f tel:+12819069013");
-    widget.channel.stream.listen((message) {
-      messages.add({
-        "isMe": false,
-        "message": message.toString(),
-        "time": DateTime.now().subtract(const Duration(seconds: 5)),
+    final wsManager = WebSocketManager();
+    // TODO change
+    wsManager.sendMessage("f tel:+12819069013\n");
+    widget.manager.messages.listen((message) {
+      setState(() {
+        messages.insert(0, {
+          "isMe": false,
+          "message": message.toString(),
+          "time": DateTime.now().subtract(const Duration(seconds: 5)),
+        });
       });
     });
   }
 
   void sendMessage() {
-    widget.channel.sink.add(_textController.text);
+    widget.manager.sendMessage(_textController.text);
   }
 
   @override
@@ -76,11 +81,11 @@ class _ChatScreenState extends State<Chat> {
           onPressed: () => Navigator.of(context).pop(),
           color: CupertinoColors.white,
         ),
-        padding: const EdgeInsetsDirectional.only(
+        padding: EdgeInsetsDirectional.only(
           start: 0,
           end: 0,
           top: 10,
-          bottom: 10,
+          bottom: 10, // Increase bottom padding as needed
         ),
       ),
 
