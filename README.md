@@ -1,6 +1,6 @@
 # tandem
 
-A half-finished remake of iMessage. Originally, tandem, would allow you to directly "blue-bubble" message iOS devices from an Android or Web device through the use of a modified PyPush backend. Although, as of 12/18/2023, the current setup allows you to send "blue-bubble" messages, the longevity and future of the project is impractical due to Apple's constant patching of the backdoors used by PyPush. As such, this project mainly served to help me learn new frameworks and technologies, to get better at full-stack development.
+A half-finished remake of iMessage. Originally, tandem, would allow you to directly "blue-bubble" message iOS devices from an Android or Web device through the use of a modified PyPush backend. Although, as of 12/18/2023, the current setup allows you to send "blue-bubble" messages, the longevity and future of the project is impractical due to Apple's constant patching of the backdoors used by PyPush. As such, this project mainly served to help me learn new frameworks and technologies to get better at full-stack development.
 
 <table align="center">
   <tr>
