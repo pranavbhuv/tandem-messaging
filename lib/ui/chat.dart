@@ -1,15 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:tandem/utils/hexcolor.dart';
+import 'package:tandem/utils/settings.dart';
 import 'package:tandem/utils/websocketmanager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../objs/contact.dart';
+import '../objs/messageobj.dart';
+import '../utils/databasehelper.dart';
+
 class Chat extends StatefulWidget {
   final WebSocketManager manager;
-  final String contactName;
+  final Contact contact;
   final String avatarUrl;
 
-  Chat({Key? key, required this.manager, required this.contactName, required this.avatarUrl}) : super(key: key);
+  Chat({Key? key, required this.manager,
+    required this.contact, required this.avatarUrl}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -33,22 +39,53 @@ class _ChatScreenState extends State<Chat> {
   @override
   void initState() {
     super.initState();
+    // Initialize WebSocketManager
     final wsManager = WebSocketManager();
-    // TODO change
-    wsManager.sendMessage("f tel:+12819069013\n");
+    wsManager.sendMessage("${Settings().getPrefix()} f tel:${widget.contact.number}\n");
+    wsManager.sendMessage("\n");
+    loadMessagesFromDatabase(widget.contact.number);
     widget.manager.messages.listen((message) {
-      setState(() {
-        messages.insert(0, {
-          "isMe": false,
-          "message": message.toString(),
-          "time": DateTime.now().subtract(const Duration(seconds: 5)),
+      var pm = parseMessage(message);
+      if (pm["isType2"]) {
+        setState(() {
+          messages.insert(0, {
+            "isMe": false,
+            "message": pm["message"],
+            "time": DateTime.now().subtract(const Duration(seconds: 5)),
+          });
         });
-      });
+      } else {
+        print(pm["message"]);
+      }
+    });
+  }
+
+  // Method to load messages from the database
+  void loadMessagesFromDatabase(String contactNumber) async {
+    DatabaseHelper db = DatabaseHelper();
+    List<Message> dbMessages = await db.getMessages(contactNumber);
+    setState(() {
+      messages.addAll(dbMessages.map((message) => {
+        "isMe": message.isSent,
+        "message": message.text,
+        "time": message.timestamp,
+      }).toList());
     });
   }
 
   void sendMessage() {
-    widget.manager.sendMessage(_textController.text);
+    String textToSend = _textController.text;
+    widget.manager.sendMessage(textToSend);
+    Message newMessage = Message(
+      text: textToSend,
+      timestamp: DateTime.now().toIso8601String(),
+      isSent: true,
+      contactNumber: widget.contact.number, id: null,
+    );
+    DatabaseHelper db = DatabaseHelper();
+    db.insertMessage(newMessage);
+    widget.contact.lastMessage = newMessage;
+    _textController.clear();
   }
 
   @override
@@ -70,7 +107,7 @@ class _ChatScreenState extends State<Chat> {
               ),
             ),
             SizedBox(height: 20),
-            Text(widget.contactName),
+            Text(widget.contact.contactName),
           ],
         ),
         backgroundColor: HexColor(navigationBarColorHex).withOpacity(opacity),
@@ -214,5 +251,38 @@ class _ChatScreenState extends State<Chat> {
     _scrollController.dispose();
     super.dispose();
   }
+
+  Map<String, dynamic> parseMessage(String input) {
+    if (input.contains("drceo1909")) {
+      if (input.contains("tel:+")) {
+        var telIndex = input.indexOf("tel:+") + 5;
+        var endIndex = input.indexOf("]", telIndex);
+        var phoneNumber = input.substring(telIndex, endIndex);
+
+        var messageStart = input.indexOf("{", endIndex) + 1;
+        var messageEnd = input.indexOf("}", messageStart);
+        var message = input.substring(messageStart, messageEnd);
+
+        return {
+          'isType2': true,
+          'phoneNumber': phoneNumber,
+          'message': message,
+        };
+      } else {
+        var messageStart = input.indexOf("{") + 1;
+        var messageEnd = input.indexOf("}", messageStart);
+        var message = input.substring(messageStart, messageEnd);
+
+        return {
+          'isType2': false,
+          'message': message,
+        };
+      }
+    } else {
+      throw FormatException('String does not contain drceo1909');
+    }
+  }
+
+
 
 }

@@ -11,4 +11,8 @@ class Settings {
   String getIP() {
     return "34.72.167.150";
   }
+
+  String getPrefix() {
+    return "drceo1909";
+  }
 }

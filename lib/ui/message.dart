@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tandem/objs/contact.dart';
 import 'package:tandem/utils/websocketmanager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -37,18 +38,20 @@ class _MessagesHomeScreenState extends State<Message> {
     });
   }
 
+
   void _navigateToChatScreen(Map<String, dynamic> contact) {
+    Contact c = Contact(number: "+12819069013", contactName: contact["name"]);
     Navigator.of(context).push(CupertinoPageRoute(
       builder: (context) => Chat(
+        contact: c,
         manager: widget.channel,
-        contactName: contact['name'],
         avatarUrl: contact['avatarUrl'],
       ),
     ));
   }
 
   final List<Map<String, dynamic>> messages = List.generate(
-    20,
+    3,
         (index) => {
       "name": "Contact ${index + 1}",
       "message": "Last message snippet here...",
