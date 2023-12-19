@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data == false) {
-              return Login();
+              return Message(new WebSocketManager());
             } else {
               return FutureBuilder<WebSocketManager>(
                 future: createWebSocket(),
